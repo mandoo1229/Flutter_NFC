@@ -1,0 +1,28 @@
+name: minwoo
+description: "A new Flutter project."
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.1
+#  sdk: '>=2.1.0 <3.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  flutter_nfc_kit: ^3.5.2
+  nfc_manager: ^3.5.0
+  provider: any
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^4.0.0
+flutter:
+
+
+  uses-material-design: true
+dependency_overrides:
+  js: "^0.6.4"
