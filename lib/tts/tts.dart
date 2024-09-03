@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:aws_polly_api/polly-2016-06-10.dart';
 import 'dart:io';
 
 void main() {
@@ -18,6 +19,19 @@ class MyTts extends StatefulWidget {
 }
 
 class _MyTtsState extends State<MyTts> {
+
+  // AWS Polly 초기값 셋팅
+  final Polly _polly = Polly(
+    region: '', // region 값
+    credentials: AwsClientCredentials(
+        accessKey: "", // accessKey값
+        secretKey: ""), // secretKey
+  );
+
+
+  
+  
+  
   FlutterTts flutterTts = FlutterTts();
   /*
   한국어 = "ko-KR"
@@ -42,7 +56,7 @@ class _MyTtsState extends State<MyTts> {
   double pitch = 1.0;
   double rate = 0.5;
 
-  final TextEditingController textEditingController = TextEditingController();
+  final TextEditingController textEditingController = TextEditingController(text: "초기값 설정");
 
   @override
   void initState() {
