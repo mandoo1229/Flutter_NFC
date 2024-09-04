@@ -8,22 +8,30 @@ environment:
   sdk: ^3.5.1
 #  sdk: '>=2.1.0 <3.0.0'
 dependencies:
+
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+
   flutter_nfc_kit: ^3.5.2
   nfc_manager: ^3.5.0
   provider: any
   flutter_tts: ^4.0.2
   aws_polly_api: ^2.0.0
+  flutter_dotenv: ^5.1.0
+  aws_polly: ^2.1.1
+  audioplayers: ^6.1.0
+  http: ^1.2.2
+  os_mime_type: ^0.0.2
+
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^4.0.0
-flutter:
 
+flutter:
 
   uses-material-design: true
 dependency_overrides:
