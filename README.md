@@ -3,6 +3,12 @@
 
 공부용으로 만들었습니다.
 
+<h3>Dart Version </h3>
+<br/>
+<div>
+Dart SDK version: 3.5.1
+</div>
+
 <br/>
 
 TTS 설치 (터미널에서 실행하면 됩니다.)
