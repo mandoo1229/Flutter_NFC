@@ -47,6 +47,15 @@
 	<true/>
 	<key>NFCReaderUsageDescription</key>
     <string>NFC tag to read NDEF messages into the application</string>
+    <key>NSAppTransportSecurity</key>
+        <dict>
+            <key>NSAllowsArbitraryLoads</key>
+            <true/>
+        </dict>
+     <key>UIBackgroundModes</key>
+     <array>
+     	<string>audio</string>
+     </array>
 
 
 </dict>
