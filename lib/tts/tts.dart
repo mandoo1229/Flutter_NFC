@@ -1,7 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
-import 'package:aws_polly_api/polly-2016-06-10.dart';
+import 'dart:convert';
 import 'dart:io';
+import 'package:aws_polly/aws_polly.dart';
+import 'package:aws_polly_api/polly-2016-06-10.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'dart:typed_data';
 
 void main() {
   runApp(const MaterialApp(
@@ -19,44 +24,17 @@ class MyTts extends StatefulWidget {
 }
 
 class _MyTtsState extends State<MyTts> {
-
-  // AWS Polly 초기값 셋팅
-  final Polly _polly = Polly(
-    region: '', // region 값
-    credentials: AwsClientCredentials(
-        accessKey: "", // accessKey값
-        secretKey: ""), // secretKey
-  );
-
-
-  
-  
-  
-  FlutterTts flutterTts = FlutterTts();
-  /*
-  한국어 = "ko-KR"
-  일본어 = "ja-JP"
-  영어 = "en-US"
-  중국어 = "zh-CN"
-   */
+  final AudioPlayer audioPlayer = AudioPlayer();
+  final FlutterTts flutterTts = FlutterTts();
+  final TextEditingController textEditingController = TextEditingController(text: "초기값 설정");
 
   String language = "ko-KR";
-
-  /* 음성 설정
-  한국어 여성 {"name": "ko-kr-x-ism-local", "locale": "ko-KR"}
-	영어 여성 {"name": "en-us-x-tpf-local", "locale": "en-US"}
-  일본어 여성 {"name": "ja-JP-language", "locale": "ja-JP"}
-  중국어 여성 {"name": "cmn-cn-x-ccc-local", "locale": "zh-CN"}
-  중국어 남성 {"name": "cmn-cn-x-ccd-local", "locale": "zh-CN"}
-  */
-
   Map<String, String> voice = {"name": "ko-kr-x-ism-local", "locale": "ko-KR"};
-  String engine = "com.google.android.tts"; // Android에서만 사용 가능
-  double volume = 2.5;
+  double volume = 1.0;
   double pitch = 1.0;
   double rate = 0.5;
 
-  final TextEditingController textEditingController = TextEditingController(text: "초기값 설정");
+
 
   @override
   void initState() {
@@ -64,9 +42,8 @@ class _MyTtsState extends State<MyTts> {
     initTts();
   }
 
-  initTts() async {
+  Future<void> initTts() async {
     if (Platform.isIOS) {
-      // iOS에서만 적용
       await initTtsIosOnly();
     }
     await flutterTts.setLanguage(language);
@@ -74,11 +51,6 @@ class _MyTtsState extends State<MyTts> {
     await flutterTts.setVolume(volume);
     await flutterTts.setPitch(pitch);
     await flutterTts.setSpeechRate(rate);
-
-    if (Platform.isAndroid) {
-      // Android에서만 적용
-      await flutterTts.setEngine(engine);
-    }
   }
 
   Future<void> initTtsIosOnly() async {
@@ -94,8 +66,38 @@ class _MyTtsState extends State<MyTts> {
     );
   }
 
-  Future<void> _speak(String voiceText) async {
-    await flutterTts.speak(voiceText);
+  Future<void> _speak(String text) async {
+    await flutterTts.speak(text);
+  }
+
+
+
+  final Polly _polly = Polly(
+    region: "",
+    credentials: AwsClientCredentials(
+      accessKey: "",
+      secretKey: "",
+    ),
+  );
+
+
+  Future<void> _speakWithPolly(String text) async {
+    try {
+      final response = await _polly.synthesizeSpeech(
+        outputFormat: OutputFormat.mp3,
+        text: text,
+        voiceId: VoiceId.seoyeon,
+      );
+
+      if (response.audioStream != null) {
+        Uint8List audioBytes = response.audioStream!;
+        await audioPlayer.play(BytesSource(audioBytes));
+      } else {
+        print("Audio stream is null");
+      }
+    } catch (e) {
+      print("Error occurred: $e");
+    }
   }
 
   @override
@@ -106,12 +108,18 @@ class _MyTtsState extends State<MyTts> {
         children: [
           TextField(
             controller: textEditingController,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Enter text',
+            ),
           ),
+          const SizedBox(height: 16),
           ElevatedButton(
-              onPressed: () {
-                _speak(textEditingController.text);
-              },
-              child: const Text('read'))
+            onPressed: () {
+              _speakWithPolly(textEditingController.text);
+            },
+            child: const Text('Read'),
+          ),
         ],
       ),
     );
