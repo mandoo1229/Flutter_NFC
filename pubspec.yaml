@@ -33,6 +33,7 @@ dev_dependencies:
 
 flutter:
   assets:
+    - assets/AwsPolly.mp3
     - assets/config/.env
 
   uses-material-design: true
